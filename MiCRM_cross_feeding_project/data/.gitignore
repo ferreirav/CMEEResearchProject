@@ -1,0 +1,4 @@
+# Rules to ignore files and folders
+
+emp_150bp_filtered.tsv
+refseq_release_201.tsv

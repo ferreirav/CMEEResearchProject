@@ -1,0 +1,3 @@
+# Rules to ignore folders and files
+
+.ipynb_checkpoints/

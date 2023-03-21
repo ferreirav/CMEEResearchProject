@@ -1,0 +1,4 @@
+# Rules to ignore folders and files
+
+Metabolic_Pathway/
+.ipynb_checkpoints/

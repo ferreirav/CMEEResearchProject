@@ -1,0 +1,56 @@
+*** 19/03/2023 ***
+
+While running SMETANA I commonly found an error on:
+
+***********
+- N/A for MIP and MRO
+***********
+- use flag "--flavor ucsd" or "--flavor bigg" (if using latest version of CarveME)
+
+------------------------------------------------------------------------
+
+- smetana.py:263: UserWarning: MIP: Failed to find a valid solution for 
+non-interacting community
+  warn('MIP: Failed to find a valid solution for non-interacting 
+community')
+
+------------------------------------------------------------------------
+
+- Running SCS for community all on medium minimal...
+./get_acessions.sh: line 41: 44205 Segmentation fault: 11  smetana -v -d 
+output/$SAMPLE/*.xml -o output/${SAMPLE}
+
+------------------------------------------------------------------------
+
+*****
+smetana.py:160: UserWarning: MUS: Failed to find a minimal growth medium 
+for Polynucleobacter_asymbioticus_QLW_P1DMWA_1_
+  warn('MUS: Failed to find a minimal growth medium for ' + org_id)
+*****
+
+--> POSSIBLE EXPLANATIONS
+
+As stated in the paper, the solution tries to "identify the minimal number of member species necessary to support growth of the target species".
+CPLEX did not find any optimal solution for the "ord_id"
+
+--> POSSIBLE SOLUTIONS
+
+1. I could use following command:
+	`smetana --molweight -v -g -o minimal --debug path/to/models/*.xml
+
+This will create a mininal_debug.tsv file with possible minimal media composition for each species in the community as well for the whole community. The --molweight flag minimises the minimal media composition predicted, producing more realistic media!
+
+Flag "--molweight" = minimising the total mass of the consumed substrates, rather than simply the total number of substrate, results in more realistic estimates of the growth medium.
+
+------------------------------------------------------------------------
+
+- urllib.error.HTTPError: HTTP Error 404: Not Found
+
+
+
+--> Improving file parallelisation might help!!!
+--> Also need to inspect if SMETANA computational time can be decreased by profiling it!
+
+--> Issue https://github.com/cdanielmachado/smetana/issues/13
+  - use flag "--flavor bigg" when running SMETANA
+	- It solves the "failing to find medium" issue. Calculating exchanges reactions using BIGG 	identifiers, otherwise searches for unbalanced reactions which include an internal "sink", 	creating an error whilst merging individual species into community models.
