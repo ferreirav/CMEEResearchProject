@@ -18,7 +18,7 @@ import urllib.request
 ### FUNCTIONS ###
 
 ### Function to generate data ###
-def get_data():
+def get_data(comm_size=None):
 
     """
     This function compiles raw data and generates a sample list and its respective features of interest
@@ -61,9 +61,21 @@ def get_data():
 
     ### FINALLY: ###
     # I will return the samples environmental entology (ENVO) metadata and a sample list
-    
-    sample_list = sorted(set(samples_envo_metadata["sample"]))
+    if comm_size is None:
+        sample_list = sorted(set(samples_envo_metadata["sample"]))
+    # elif comm_size <= 1:
+    #     print("Community need to be greater than a single species!!!")
+    else:
+        # If community size specified, it will just retrieve the correspondent data...
+        samples_comms_sizes = samples_envo_metadata.groupby(['sample']).size().reset_index(name='community_size')
+        communities_filtered = samples_comms_sizes[samples_comms_sizes['community_size'].between(0,comm_size)]
+        # sample list...
+        sample_list = communities_filtered.iloc[:,0]
+        #...and metadata!
+        communities_filtered_ids = sorted(set(communities_filtered['sample']))
+        samples_envo_metadata = samples_envo_metadata[samples_envo_metadata['sample'].isin(communities_filtered_ids)]
 
+        
     return sample_list, samples_envo_metadata
 
 
